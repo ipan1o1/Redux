@@ -1,8 +1,9 @@
 public class Ball extends Entity{
 
     // Attributes
-    private int lig, col;
-    private int prevL, prevC;
+    private double x, y;
+    private double vx, vy;
+    private double radius = 0.3;
 
     // Methodes 
        
