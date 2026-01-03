@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
 public class Ball extends Entity{
 
     // Attributs
@@ -41,5 +44,23 @@ public class Ball extends Entity{
     public void setRadius(double radius) { this.radius = radius; }
 
     // Methodes 
-       
+
+    public double speed() {
+        return Math.sqrt(vx * vx + vy * vy);
+    }
+
+    public void move(){
+        x += vx;
+        y += vy;
+    }
+
+    public void draw(Graphics g, int pixelSize){
+        g.setColor(new Color(255, 153, 204));
+        int rPixels = (int)(this.radius * pixelSize);
+        int xPixels = (int)(this.x * pixelSize);
+        int yPixels = (int)(this.y * pixelSize);
+        int dPixels = rPixels * 2;
+
+        g.fillOval(xPixels, yPixels, dPixels, dPixels);
+    }
 }

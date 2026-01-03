@@ -9,56 +9,57 @@ public class Labyrinth extends JPanel {
     protected final int tile = 50;
     private int width, height;
     private Square[][] map;
+    private Ball ball;
         
+    private Point lastMousePosition;
     // Constructor
-    public Labyrinth(String file){
-        this.setPreferredSize(new Dimension(1000,550));
+    public Labyrinth(String fileName){
+        this.setPreferredSize(new Dimension(1000, 550)); //Change to -> width * tile, height * tile LATER FOR OTHER Vs
+
         this.setBackground(Color.WHITE);
         try {
-            Scanner sc = new Scanner(new FileInputStream(file));
+            Scanner sc = new Scanner(new FileInputStream(fileName));
             this.width = sc.nextInt();
             this.height = sc.nextInt();
             sc.nextLine();
-            this.map = new Square[height][width];
-            for(int l = 0; l < this.height; l++){
+
+            this.map = new Square[width][height];
+
+            for(int y = 0; y < this.height; y++){
                 String line = sc.nextLine();
-                for(int c = 0; c < this.width; c++){
-                    Square cc;
-                    Character ch = line.charAt(c);
-                    switch (ch) {
-                        case '#': cc = new SquareSolid(l, c); break;
-                        case ' ': cc = new SquareOrdinary(l, c); break;
-                        default: cc = null; break;
+                for(int x = 0; x < this.width; x++){
+                    
+                    Character ch = line.charAt(x);
+                    if(ch == '#'){
+                        map[x][y] = new Wall(x, y);
+                    }else{
+                        map[x][y] = new Floor(x, y);
                     }
-                    this.map[l][c] = cc;
                 }
             }
             sc.close();
         } 
         catch (Exception e) { e.printStackTrace();}
+
+        //fix dims
     }
 
+    @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        for (int i = 0; i < map.length ; i++){
-            for (int j = 0; j < map[0].length ; j++){
-                int x = j * tile;
-                int y = i * tile;
-
-                g.setColor(Color.DARK_GRAY);
-                g.drawRect(x, y, tile, tile);
+        if(map != null){
+            for (int x = 0; x < map.length ; x++){
+                for (int y = 0; y < map[0].length ; y++){
+                    if(map[x][y] != null) map[x][y].draw(g, tile);
+                }
             }
         }
+        if (ball != null) this.ball.draw(g, tile);
     }
+
+    //Setters + Getters
+    public int getGridWidth(){return width; }
+    public int getGridHeight(){return height; }
+    public void setBall(Ball b){this.ball = b; }
     
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Enigma Game");
-        String fileName = "laby.txt";
-        Labyrinth panel = new Labyrinth(fileName);
-        frame.getContentPane().add(panel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
 }
