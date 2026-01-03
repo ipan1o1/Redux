@@ -14,8 +14,6 @@ public class Labyrinth extends JPanel {
     private Point lastMousePosition;
     // Constructor
     public Labyrinth(String fileName){
-        this.setPreferredSize(new Dimension(1000, 550)); //Change to -> width * tile, height * tile LATER FOR OTHER Vs
-
         this.setBackground(Color.WHITE);
         try {
             Scanner sc = new Scanner(new FileInputStream(fileName));
@@ -41,7 +39,7 @@ public class Labyrinth extends JPanel {
         } 
         catch (Exception e) { e.printStackTrace();}
 
-        //fix dims
+        this.setPreferredSize(new Dimension(width * tile, height * tile));
     }
 
     @Override
