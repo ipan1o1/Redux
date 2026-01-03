@@ -54,7 +54,7 @@ public class Ball extends Entity{
         y += vy;
     }
 
-    public void draw(Graphics g, int pixelSize){
+    public void draw(Graphics g, int pixelSize){ // FIX Math ball bounce is OFFSET -> North + West
         g.setColor(new Color(255, 153, 204));
         int rPixels = (int)(this.radius * pixelSize);
         int xPixels = (int)(this.x * pixelSize);
