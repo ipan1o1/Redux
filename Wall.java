@@ -3,12 +3,12 @@ import java.awt.Graphics;
 
 public class Wall extends Square{
 
-    // Constructor
+    // Constructeur
     public Wall(int x, int y){
         super(x, y);
     }
 
-    // Methods
+    // Methodes
     @Override
     public boolean isEmpty(){
         return false;
@@ -16,17 +16,14 @@ public class Wall extends Square{
 
     @Override
     public void enter(Ball b){
-        // Does nothing
     }
 
     @Override
     public void leave(Ball b){
-        // Does nothing
     }
 
     @Override
     public void touch(Ball b){
-        // Makes the ball bounce
     }
 
     @Override

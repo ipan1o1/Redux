@@ -3,10 +3,12 @@ import java.awt.Graphics;
 
 public class Hole extends Square {
 
+    //Constructeur
     public Hole(int x, int y) {
         super(x, y);
     }
 
+    //Methodes
     @Override
     public boolean isEmpty() {
         return true;

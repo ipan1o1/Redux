@@ -5,7 +5,7 @@ public abstract class Square {
     //Atributes
     protected final int x, y;
 
-    // Constructor
+    // Constructeur
     public Square(int x, int y){
         this.x = x;
         this.y = y;

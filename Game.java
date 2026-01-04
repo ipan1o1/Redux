@@ -1,13 +1,17 @@
 import javax.swing.*;
 
 public class Game {
+    //Attributs
     private Labyrinth lab;
     private Ball ball;
     private final int delayMs = 20;
     private final double friction = 0.0012;
     private Timer timer;
     private boolean gameOver = false;
+    private final double startX = 2.0;
+    private final double startY = 2.0;
 
+    //Constructeur
     public Game(String fileName){
         lab = new Labyrinth(fileName);
         ball = new Ball(2.0, 2.0, 0.02, 0.02);
@@ -22,10 +26,20 @@ public class Game {
 
         timer = new Timer(delayMs, e -> tick());
         timer.start();
+
+        frame.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
+        public void keyPressed(java.awt.event.KeyEvent e) {
+            if (e.getKeyCode() == java.awt.event.KeyEvent.VK_R) {
+                resetGame();
+            }
+        }
+        });
     }
 
+    //Methodes
+
     private void handleInternalWallCollisions() {
-        // Check only the 3x3 cells around the ball (fast + enough)
         int cx = (int) Math.floor(ball.getX());
         int cy = (int) Math.floor(ball.getY());
 
@@ -39,9 +53,8 @@ public class Game {
     private void collideWithCell(int gx, int gy) {
         Square s = lab.getSquare(gx, gy);
         if (s == null) return;
-        if (s.isEmpty()) return; // only collide with non-empty (walls)
+        if (s.isEmpty()) return;
 
-        // Wall cell rectangle: [gx, gx+1] × [gy, gy+1]
         double closestX = clamp(ball.getX(), gx, gx + 1.0);
         double closestY = clamp(ball.getY(), gy, gy + 1.0);
 
@@ -51,7 +64,7 @@ public class Game {
         double r = ball.getRadius();
         double dist2 = dx * dx + dy * dy;
 
-        if (dist2 >= r * r) return; // no collision
+        if (dist2 >= r * r) return;
 
         if (Math.abs(dx) > Math.abs(dy)) {
             if (dx > 0) ball.setX(closestX + r);
@@ -85,18 +98,24 @@ public class Game {
         int cellY = (int) Math.floor(ball.getY());
 
         Square sq = lab.getSquare(cellX, cellY);
+        if (sq != null) {
+            sq.enter(ball);
+            cellX = (int) Math.floor(ball.getX());
+            cellY = (int) Math.floor(ball.getY());
+            sq = lab.getSquare(cellX, cellY);
+        }
+
         if (!gameOver && sq != null) {
             if (sq instanceof Exit) {
                 gameOver = true;
                 timer.stop();
                 JOptionPane.showMessageDialog(lab, "YOU WIN!");
-                return;
-            }
-            if (sq instanceof Hole) {
+                System.exit(0);
+            } else if (sq instanceof Hole) {
                 gameOver = true;
                 timer.stop();
                 JOptionPane.showMessageDialog(lab, "YOU LOSE!");
-                return;
+                System.exit(0);
             }
         }
 
@@ -109,7 +128,6 @@ public class Game {
             double fx = friction * vx / speed;
             double fy = friction * vy / speed;
 
-            // avoid reversing direction when speed is very small
             if (speed > friction) {
                 ball.setVx(vx - fx);
                 ball.setVy(vy - fy);
@@ -118,15 +136,19 @@ public class Game {
                 ball.setVy(0);
             }
         }
-
-        
-
         lab.repaint();
 
     }
 
+    private void resetGame() {
+        ball.setX(startX);
+        ball.setY(startY);
+        ball.setVx(0);
+        ball.setVy(0);
+    }
+
     public static void main(String[] args) {
-        String fileName = "laby02.txt";
+        String fileName = "laby.txt";
         new Game(fileName);
     }
 }

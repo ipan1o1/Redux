@@ -2,11 +2,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Exit extends Square {
-
+    //Constructeur
     public Exit(int x, int y) {
         super(x, y);
     }
 
+    //Methodes
     @Override
     public boolean isEmpty() {
         return true; 

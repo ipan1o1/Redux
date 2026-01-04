@@ -13,6 +13,9 @@ public class Labyrinth extends JPanel {
     private Ball ball;
     private final double fa = 0.01;
     private Point lastMousePosition = null;
+    private Teleporter firstTeleporter = null;
+    private Teleporter secondTeleporter = null;
+
 
     //Setters + Getters
     public int getGridWidth(){return width; }
@@ -39,12 +42,31 @@ public class Labyrinth extends JPanel {
                         case '#':
                             map[x][y] = new Wall(x, y);
                             break;
+
                         case 'E':
                             map[x][y] = new Exit(x, y);
                             break;
+
                         case 'O':
                             map[x][y] = new Hole(x, y);
                             break;
+
+                        case 'T':
+                            Teleporter t = new Teleporter(x, y);
+                            map[x][y] = t;
+
+                            if (firstTeleporter == null) {
+                                firstTeleporter = t;
+                            } else {
+                                secondTeleporter = t;
+
+                                firstTeleporter.link(secondTeleporter);
+                                secondTeleporter.link(firstTeleporter);
+
+                                secondTeleporter.setActive(false);
+                            }
+                            break;
+
                         default:
                             map[x][y] = new Floor(x, y);
                             break;

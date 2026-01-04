@@ -3,6 +3,7 @@ import java.awt.Graphics;
 
 public class Floor extends Square {
 
+    //Attribut
     protected Entity content;
     
     // Constructor
@@ -10,6 +11,7 @@ public class Floor extends Square {
         super(x, y);
     }
 
+    //Methodes
     @Override
     public boolean isEmpty(){
         return true;
