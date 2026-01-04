@@ -5,6 +5,8 @@ public class Game {
     private Ball ball;
     private final int delayMs = 20;
     private final double friction = 0.0012;
+    private Timer timer;
+    private boolean gameOver = false;
 
     public Game(String fileName){
         lab = new Labyrinth(fileName);
@@ -18,7 +20,7 @@ public class Game {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
-        Timer timer = new Timer(delayMs, e -> tick());
+        timer = new Timer(delayMs, e -> tick());
         timer.start();
     }
 
@@ -79,6 +81,25 @@ public class Game {
         ball.move();
         handleInternalWallCollisions();
 
+        int cellX = (int) Math.floor(ball.getX());
+        int cellY = (int) Math.floor(ball.getY());
+
+        Square sq = lab.getSquare(cellX, cellY);
+        if (!gameOver && sq != null) {
+            if (sq instanceof Exit) {
+                gameOver = true;
+                timer.stop();
+                JOptionPane.showMessageDialog(lab, "YOU WIN!");
+                return;
+            }
+            if (sq instanceof Hole) {
+                gameOver = true;
+                timer.stop();
+                JOptionPane.showMessageDialog(lab, "YOU LOSE!");
+                return;
+            }
+        }
+
         double vx = ball.getVx();
         double vy = ball.getVy();
         double speed = Math.sqrt(vx * vx + vy * vy);
@@ -105,7 +126,7 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        String fileName = "laby.txt";
+        String fileName = "laby02.txt";
         new Game(fileName);
     }
 }

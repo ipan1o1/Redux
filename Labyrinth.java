@@ -35,10 +35,19 @@ public class Labyrinth extends JPanel {
                 for(int x = 0; x < this.width; x++){
                     
                     Character ch = line.charAt(x);
-                    if(ch == '#'){
-                        map[x][y] = new Wall(x, y);
-                    }else{
-                        map[x][y] = new Floor(x, y);
+                    switch (ch) {
+                        case '#':
+                            map[x][y] = new Wall(x, y);
+                            break;
+                        case 'E':
+                            map[x][y] = new Exit(x, y);
+                            break;
+                        case 'O':
+                            map[x][y] = new Hole(x, y);
+                            break;
+                        default:
+                            map[x][y] = new Floor(x, y);
+                            break;
                     }
                 }
             }
