@@ -105,4 +105,9 @@ public class Labyrinth extends JPanel {
     lastMousePosition = p;
     }
 
+    public Square getSquare(int gx, int gy) {
+        if (gx < 0 || gy < 0 || gx >= width || gy >= height) return null;
+        return map[gx][gy]; // because you store map[width][height] as map[x][y]
+    }
+
 }

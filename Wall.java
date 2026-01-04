@@ -11,7 +11,7 @@ public class Wall extends Square{
     // Methods
     @Override
     public boolean isEmpty(){
-        return true;
+        return false;
     }
 
     @Override

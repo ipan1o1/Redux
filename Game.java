@@ -22,34 +22,67 @@ public class Game {
         timer.start();
     }
 
-    private void tick(){
-        ball.move();
+    private void handleInternalWallCollisions() {
+        // Check only the 3x3 cells around the ball (fast + enough)
+        int cx = (int) Math.floor(ball.getX());
+        int cy = (int) Math.floor(ball.getY());
+
+        for (int gx = cx - 1; gx <= cx + 1; gx++) {
+            for (int gy = cy - 1; gy <= cy + 1; gy++) {
+                collideWithCell(gx, gy);
+            }
+        }
+    }
+
+    private void collideWithCell(int gx, int gy) {
+        Square s = lab.getSquare(gx, gy);
+        if (s == null) return;
+        if (s.isEmpty()) return; // only collide with non-empty (walls)
+
+        // Wall cell rectangle: [gx, gx+1] × [gy, gy+1]
+        double closestX = clamp(ball.getX(), gx, gx + 1.0);
+        double closestY = clamp(ball.getY(), gy, gy + 1.0);
+
+        double dx = ball.getX() - closestX;
+        double dy = ball.getY() - closestY;
+
         double r = ball.getRadius();
-        double x = ball.getX();
-        double y = ball.getY();
+        double dist2 = dx * dx + dy * dy;
 
-        int W = lab.getGridWidth();
-        int H = lab.getGridHeight();
+        if (dist2 >= r * r) return; // no collision
 
-        if (x - r < 0.0){
-            ball.setX(r);
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) ball.setX(closestX + r);
+            else        ball.setX(closestX - r);
             ball.setVx(-ball.getVx());
-        } else if (x + r > W){
-            ball.setX(W - r);
-            ball.setVx(-ball.getVx());
-        }
-
-        if (y - r < 0.0){
-            ball.setY(r);
-            ball.setVy(-ball.getVy());
-        } else if (y + r > H){
-            ball.setY(H - r);
+        } else {
+            if (dy > 0) ball.setY(closestY + r);
+            else        ball.setY(closestY - r);
             ball.setVy(-ball.getVy());
         }
+    }
+
+    private double clamp(double v, double min, double max) {
+        if (v < min) return min;
+        if (v > max) return max;
+        return v;
+    }
+
+    private void tick(){
+        double vmax = 0.2;
+        double v = ball.speed();
+        if (v > vmax) {
+            ball.setVx(ball.getVx() * (vmax / v));
+            ball.setVy(ball.getVy() * (vmax / v));
+        }
+
+        ball.move();
+        handleInternalWallCollisions();
 
         double vx = ball.getVx();
         double vy = ball.getVy();
         double speed = Math.sqrt(vx * vx + vy * vy);
+
 
         if (speed > 0) {
             double fx = friction * vx / speed;
@@ -64,6 +97,8 @@ public class Game {
                 ball.setVy(0);
             }
         }
+
+        
 
         lab.repaint();
 
