@@ -4,6 +4,7 @@ public class Game {
     private Labyrinth lab;
     private Ball ball;
     private final int delayMs = 20;
+    private final double friction = 0.0012;
 
     public Game(String fileName){
         lab = new Labyrinth(fileName);
@@ -44,6 +45,24 @@ public class Game {
         } else if (y + r > H){
             ball.setY(H - r);
             ball.setVy(-ball.getVy());
+        }
+
+        double vx = ball.getVx();
+        double vy = ball.getVy();
+        double speed = Math.sqrt(vx * vx + vy * vy);
+
+        if (speed > 0) {
+            double fx = friction * vx / speed;
+            double fy = friction * vy / speed;
+
+            // avoid reversing direction when speed is very small
+            if (speed > friction) {
+                ball.setVx(vx - fx);
+                ball.setVy(vy - fy);
+            } else {
+                ball.setVx(0);
+                ball.setVy(0);
+            }
         }
 
         lab.repaint();

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.*;
 import java.io.FileInputStream;
 import java.util.Scanner;
 import javax.swing.*;
@@ -10,8 +11,14 @@ public class Labyrinth extends JPanel {
     private int width, height;
     private Square[][] map;
     private Ball ball;
-        
-    private Point lastMousePosition;
+    private final double fa = 0.01;
+    private Point lastMousePosition = null;
+
+    //Setters + Getters
+    public int getGridWidth(){return width; }
+    public int getGridHeight(){return height; }
+    public void setBall(Ball b){this.ball = b; }
+
     // Constructor
     public Labyrinth(String fileName){
         this.setBackground(Color.WHITE);
@@ -40,7 +47,32 @@ public class Labyrinth extends JPanel {
         catch (Exception e) { e.printStackTrace();}
 
         this.setPreferredSize(new Dimension(width * tile, height * tile));
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                applyMouseAcceleration(e);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                applyMouseAcceleration(e);
+            }
+        });
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                lastMousePosition = null; // avoid big jump when re-entering
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                lastMousePosition = e.getPoint();
+            }
+        });
     }
+
+    //Methodes
 
     @Override
     public void paintComponent(Graphics g){
@@ -55,9 +87,22 @@ public class Labyrinth extends JPanel {
         if (ball != null) this.ball.draw(g, tile);
     }
 
-    //Setters + Getters
-    public int getGridWidth(){return width; }
-    public int getGridHeight(){return height; }
-    public void setBall(Ball b){this.ball = b; }
-    
+    private void applyMouseAcceleration(MouseEvent e) {
+    if (ball == null) return;
+
+    Point p = e.getPoint();
+    if (lastMousePosition != null) {
+        int dxPixels = p.x - lastMousePosition.x;
+        int dyPixels = p.y - lastMousePosition.y;
+
+        // convert pixels → grid units
+        double sx = (double) dxPixels / tile;
+        double sy = (double) dyPixels / tile;
+
+        ball.setVx(ball.getVx() + fa * sx);
+        ball.setVy(ball.getVy() + fa * sy);
+    }
+    lastMousePosition = p;
+    }
+
 }
