@@ -93,7 +93,7 @@ public class Labyrinth extends JPanel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                lastMousePosition = null; // avoid big jump when re-entering
+                lastMousePosition = null;
             }
 
             @Override
@@ -126,7 +126,6 @@ public class Labyrinth extends JPanel {
         int dxPixels = p.x - lastMousePosition.x;
         int dyPixels = p.y - lastMousePosition.y;
 
-        // convert pixels → grid units
         double sx = (double) dxPixels / tile;
         double sy = (double) dyPixels / tile;
 
@@ -138,7 +137,7 @@ public class Labyrinth extends JPanel {
 
     public Square getSquare(int gx, int gy) {
         if (gx < 0 || gy < 0 || gx >= width || gy >= height) return null;
-        return map[gx][gy]; // because you store map[width][height] as map[x][y]
+        return map[gx][gy];
     }
 
 }
