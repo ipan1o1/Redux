@@ -119,20 +119,20 @@ public class Labyrinth extends JPanel {
     }
 
     private void applyMouseAcceleration(MouseEvent e) {
-    if (ball == null) return;
+        if (ball == null) return;
 
-    Point p = e.getPoint();
-    if (lastMousePosition != null) {
-        int dxPixels = p.x - lastMousePosition.x;
-        int dyPixels = p.y - lastMousePosition.y;
+        Point p = e.getPoint();
+        if (lastMousePosition != null) {
+            int dxPixels = p.x - lastMousePosition.x;
+            int dyPixels = p.y - lastMousePosition.y;
 
-        double sx = (double) dxPixels / tile;
-        double sy = (double) dyPixels / tile;
+            double sx = (double) dxPixels / tile;
+            double sy = (double) dyPixels / tile;
 
-        ball.setVx(ball.getVx() + fa * sx);
-        ball.setVy(ball.getVy() + fa * sy);
-    }
-    lastMousePosition = p;
+            ball.setVx(ball.getVx() + fa * sx);
+            ball.setVy(ball.getVy() + fa * sy);
+        }
+        lastMousePosition = p;
     }
 
     public Square getSquare(int gx, int gy) {
